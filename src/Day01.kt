@@ -1,5 +1,3 @@
-import java.util.Comparator
-
 fun main() {
     fun part1(input: List<String>): Int {
         return input.fold(0) { acc, s ->
