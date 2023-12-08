@@ -22,14 +22,14 @@ fun main() {
     part2(input).println()
 }
 
-fun getWinner(line: String): List<String> {
+private fun getWinner(line: String): List<String> {
     val (_, table) = line.split(": ")
     val (winning, contain) = table.split(" | ").map { it.split(" ").filter { it.isNotEmpty() } }
 
     return winning.filter { it in contain }
 }
 
-fun noOfWinning(card: Int, input: List<String>): Int {
+private fun noOfWinning(card: Int, input: List<String>): Int {
     val line = input[card]
     val winner = getWinner(line)
     return if (winner.isEmpty())

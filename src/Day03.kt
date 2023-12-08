@@ -62,7 +62,7 @@ fun main() {
     part2(input).println()
 }
 
-fun extractNumber(pos: Int, line: String): Pair<Int, List<Int>> {
+private fun extractNumber(pos: Int, line: String): Pair<Int, List<Int>> {
     val indices = arrayListOf<Int>()
     var number = ""
     var index = pos
