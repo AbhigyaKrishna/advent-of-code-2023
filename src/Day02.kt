@@ -1,8 +1,8 @@
-const val MAX_RED = 12
-const val MAX_GREEN = 13
-const val MAX_BLUE = 14
+private const val MAX_RED = 12
+private const val MAX_GREEN = 13
+private const val MAX_BLUE = 14
 
-data class Hand(val red: Int = 0, val blue: Int = 0, val green: Int = 0) {
+private data class Hand(val red: Int = 0, val blue: Int = 0, val green: Int = 0) {
     val isValid: Boolean get() = red <= MAX_RED && green <= MAX_GREEN && blue <= MAX_BLUE
 
     val power: Int get() = red * blue * green
@@ -38,7 +38,7 @@ fun main() {
     part2(input).println()
 }
 
-fun String.extractHand(): List<Hand> {
+private fun String.extractHand(): List<Hand> {
     return this.split("; ").map {
         val colors = it.split(", ")
 
@@ -58,7 +58,7 @@ fun String.extractHand(): List<Hand> {
     }
 }
 
-fun List<Hand>.maxRequired(): Hand {
+private fun List<Hand>.maxRequired(): Hand {
     return this.reduce { acc, hand ->
         Hand(
             red = maxOf(acc.red, hand.red),

@@ -1,7 +1,7 @@
 import kotlinx.coroutines.*
 import java.util.concurrent.atomic.AtomicLong
 
-class FunctionMap(val from: String, val to: String, private val range: LongRange, private val mapper: (Long) -> Long) {
+private class FunctionMap(val from: String, val to: String, private val range: LongRange, private val mapper: (Long) -> Long) {
     operator fun contains(value: Long) = value in range
     operator fun invoke(value: Long) = mapper(value)
 }
@@ -117,7 +117,7 @@ private fun readMaps(iter: Iterator<String>): Map<String, List<FunctionMap>> {
     }
 }
 
-fun LongRange.split(count: Int): List<LongRange> {
+private fun LongRange.split(count: Int): List<LongRange> {
     val c = this.last - this.first + 1
     val amount = count.coerceAtMost(c.toInt())
     val step = c / amount
