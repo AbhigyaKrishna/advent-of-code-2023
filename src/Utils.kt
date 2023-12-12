@@ -19,3 +19,13 @@ fun String.md5() = BigInteger(1, MessageDigest.getInstance("MD5").digest(toByteA
  * The cleaner shorthand for printing output.
  */
 fun Any?.println() = println(this)
+
+/**
+ * Repeats the string n times with the given separator.
+ */
+fun String.repeat(n: Int, separator: String = "") = (1..n).joinToString(separator) { this }
+
+/**
+ * Repeats the list n times.
+ */
+fun <T> List<T>.repeat(n: Int) = (1..n).flatMap { this }
