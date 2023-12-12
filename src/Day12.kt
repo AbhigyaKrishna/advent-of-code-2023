@@ -50,7 +50,9 @@ private fun findNumberOfArrangements(pattern: String, nums: List<Int>): Long {
 //    println("Starting with $pattern and $nums")
     if ((pattern to nums) in DP) {
 //        println("Found in DP")
-        return DP[pattern to nums]!!
+        runCatching {
+            return DP[pattern to nums]!!
+        }
     }
     if (nums.isEmpty()) return 1
     val current = nums[0]
