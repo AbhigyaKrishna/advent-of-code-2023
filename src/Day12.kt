@@ -1,6 +1,8 @@
 import kotlinx.coroutines.*
 import java.util.concurrent.atomic.AtomicInteger
 
+private val DP: MutableMap<Pair<String, List<Int>>, Long> = mutableMapOf()
+
 @OptIn(DelicateCoroutinesApi::class)
 fun main() {
     fun part1(input: List<String>): Long {
@@ -27,17 +29,17 @@ fun main() {
                     counter.incrementAndGet()
                     v
                 } }
-                .sumOf { it.await() }
+                .toList()
+                .awaitAll()
+                .sum()
                 .also {
                     job.cancelAndJoin()
                 }
         }
     }
 
-//    println(findNumberOfArrangements(".??#?????????", listOf(1, 5)))
-
     val testInput = readInput("Day12_test")
-    check(part2(testInput)== 525152L)
+    check(part2(testInput) == 525152L)
 
     val input = readInput("Day12")
     part1(input).println()
@@ -45,13 +47,17 @@ fun main() {
 }
 
 private fun findNumberOfArrangements(pattern: String, nums: List<Int>): Long {
+//    println("Starting with $pattern and $nums")
+    if ((pattern to nums) in DP) {
+//        println("Found in DP")
+        return DP[pattern to nums]!!
+    }
     if (nums.isEmpty()) return 1
     val current = nums[0]
     if (pattern.length < current) return 0
     val hashCount = pattern.count { it == '#' }
     var i = 0
     var total = 0L
-//    println("Starting with $pattern and $nums")
     while (i < pattern.length && i + current <= pattern.length) {
 //        println("Step $pattern -> $i")
         if (pattern[i] != '.') {
@@ -77,5 +83,6 @@ private fun findNumberOfArrangements(pattern: String, nums: List<Int>): Long {
         i++
     }
 
+    DP[pattern to nums] = total
     return total
 }
