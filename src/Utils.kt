@@ -29,3 +29,22 @@ fun String.repeat(n: Int, separator: String = "") = (1..n).joinToString(separato
  * Repeats the list n times.
  */
 fun <T> List<T>.repeat(n: Int) = (1..n).flatMap { this }
+
+/**
+ * Splits this collection into a list of lists with the given splitter condition.
+ * The splitter is not included in the result.
+ */
+fun <T> Iterable<T>.chunked(splitter: (T) -> Boolean): List<List<T>> {
+    val result = mutableListOf<MutableList<T>>()
+    var curr = mutableListOf<T>()
+    for (item in this) {
+        if (splitter(item)) {
+            result.add(curr)
+            curr = mutableListOf()
+        } else {
+            curr.add(item)
+        }
+    }
+    result.add(curr)
+    return result
+}
