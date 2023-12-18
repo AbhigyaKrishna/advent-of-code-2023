@@ -2,6 +2,7 @@ import java.math.BigInteger
 import java.security.MessageDigest
 import kotlin.io.path.Path
 import kotlin.io.path.readLines
+import kotlin.math.abs
 
 /**
  * Reads lines from the given input txt file.
@@ -50,6 +51,22 @@ fun <T> Iterable<T>.chunked(splitter: (T) -> Boolean): List<List<T>> {
 }
 
 /**
+ * Calculates the area of the given coordinates using Pick's Theorem.
+ */
+fun calculateAreaPicksTheorem(coords: List<Point2D>): Long {
+    var area = 0L
+    var boundary = 0L
+    for (i in coords.indices) {
+        val (x1, y1) = coords.elementAt(i)
+        val (x2, y2) = coords.elementAt((i + 1) % coords.size)
+        area += x1.toLong() * y2.toLong() - x2.toLong() * y1.toLong()
+        boundary += abs(x1.toLong() - x2.toLong()) + abs(y1.toLong() - y2.toLong())
+    }
+
+    return (abs(area) - boundary + 2) / 2
+}
+
+/**
  * Represents a 2 dimensional direction.
  */
 enum class Direction {
@@ -69,6 +86,8 @@ enum class Direction {
 data class Point2D(val x: Int, val y: Int) {
 
     companion object {
+        val ZERO = Point2D(0, 0)
+
         val NORTH = Point2D(0, -1)
         val EAST = Point2D(1, 0)
         val SOUTH = Point2D(0, 1)
@@ -79,13 +98,17 @@ data class Point2D(val x: Int, val y: Int) {
 
     operator fun minus(other: Point2D) = Point2D(x - other.x, y - other.y)
 
-    fun translate(direction: Direction): Point2D {
+    fun translate(direction: Direction, units: Int = 1): Point2D {
         return when (direction) {
-            Direction.UP -> Point2D(x, y - 1)
-            Direction.DOWN -> Point2D(x, y + 1)
-            Direction.LEFT -> Point2D(x - 1, y)
-            Direction.RIGHT -> Point2D(x + 1, y)
+            Direction.UP -> Point2D(x, y - units)
+            Direction.DOWN -> Point2D(x, y + units)
+            Direction.LEFT -> Point2D(x - units, y)
+            Direction.RIGHT -> Point2D(x + units, y)
         }
+    }
+
+    override fun toString(): String {
+        return "($x, $y)"
     }
 
 }

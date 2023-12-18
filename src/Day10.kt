@@ -33,7 +33,7 @@ fun main() {
             if (pipes.isEmpty() && x != input[y].lastIndex)
                 pipes = checkPipe(input, x, y, Direction.RIGHT)
 
-            return calculateAreaPicksTheorem(pipes.keys.toList())
+            return calculateAreaPicksTheorem(pipes.keys.toList()).toInt()
         }
 
         return -1
