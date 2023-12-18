@@ -1,5 +1,3 @@
-import kotlin.math.abs
-
 fun main() {
     fun part1(input: List<String>): Int {
         for (y in input.indices) {
@@ -35,7 +33,7 @@ fun main() {
             if (pipes.isEmpty() && x != input[y].lastIndex)
                 pipes = checkPipe(input, x, y, Direction.RIGHT)
 
-            return calculateArea(pipes.keys)
+            return calculateAreaPicksTheorem(pipes.keys.toList())
         }
 
         return -1
@@ -133,18 +131,4 @@ private fun checkPipe(
     }
 
     return result
-}
-
-// Pick's theorem
-private fun calculateArea(coords: Set<Point2D>): Int {
-    var area = 0
-    var boundary = 0
-    for (i in coords.indices) {
-        val (x1, y1) = coords.elementAt(i)
-        val (x2, y2) = coords.elementAt((i + 1) % coords.size)
-        area += x1 * y2 - x2 * y1
-        boundary += abs(x1 - x2) + abs(y1 - y2)
-    }
-
-    return (abs(area) - boundary + 2) / 2
 }
