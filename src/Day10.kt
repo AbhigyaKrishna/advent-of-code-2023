@@ -5,7 +5,7 @@ fun main() {
         for (y in input.indices) {
             val x = input[y].indexOf('S')
             if (x == -1) continue
-            var pipes = emptyMap<Pair<Int, Int>, Char>()
+            var pipes = emptyMap<Point2D, Char>()
             if (y != input.lastIndex)
                 pipes = checkPipe(input, x, y, Direction.DOWN)
             if (pipes.isEmpty() && y != 0)
@@ -25,7 +25,7 @@ fun main() {
         for (y in input.indices) {
             val x = input[y].indexOf('S')
             if (x == -1) continue
-            var pipes = emptyMap<Pair<Int, Int>, Char>()
+            var pipes = emptyMap<Point2D, Char>()
             if (y != input.lastIndex)
                 pipes = checkPipe(input, x, y, Direction.DOWN)
             if (pipes.isEmpty() && y != 0)
@@ -49,17 +49,13 @@ fun main() {
     part2(input).println()
 }
 
-private enum class Direction {
-    UP, DOWN, LEFT, RIGHT
-}
-
 private fun checkPipe(
     input: List<String>,
     startX: Int,
     startY: Int,
     direction: Direction
-): Map<Pair<Int, Int>, Char> {
-    val result = LinkedHashMap<Pair<Int, Int>, Char>()
+): Map<Point2D, Char> {
+    val result = LinkedHashMap<Point2D, Char>()
     var dx = startX
     var dy = startY
     var direction = direction
@@ -72,11 +68,11 @@ private fun checkPipe(
     while (true) {
         val c = input[dy][dx]
         if (startX == dx && startY == dy) {
-            result[dx to dy] = c
+            result[Point2D(dx, dy)] = c
             break
         }
         if (dy !in input.indices || dx !in input[dy].indices) break
-        result[dx to dy] = c
+        result[Point2D(dx, dy)] = c
         when (c) {
             '|' -> when (direction) {
                 Direction.UP -> dy--
@@ -140,7 +136,7 @@ private fun checkPipe(
 }
 
 // Pick's theorem
-private fun calculateArea(coords: Set<Pair<Int, Int>>): Int {
+private fun calculateArea(coords: Set<Point2D>): Int {
     var area = 0
     var boundary = 0
     for (i in coords.indices) {

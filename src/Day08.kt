@@ -1,6 +1,5 @@
 import kotlinx.coroutines.*
 
-@OptIn(DelicateCoroutinesApi::class)
 fun main() {
     fun part1(input: List<String>): Int {
         val path = input[0]

@@ -27,21 +27,21 @@ private fun findGalaxyCoords(input: List<String>, freeSpaceIncrement: Long): Lis
 
     var dx = 0L
     var dy = 0L
-    val galaxies = mutableMapOf<Pair<Int, Int>, Pair<Long, Long>>()
+    val galaxies = mutableMapOf<Point2D, Pair<Long, Long>>()
     while (x != input.size) {
         // rows
         var foundGalaxy = false
         for (i in x until input.size) {
             if (input[y][i] == '#') {
-                galaxies[i to y] = i + dx to y + dy
+                galaxies[Point2D(i, y)] = i + dx to y + dy
                 foundGalaxy = true
             }
         }
 
-        if (!foundGalaxy && galaxies.keys.none { it.second == y }) {
+        if (!foundGalaxy && galaxies.keys.none { it.y == y }) {
             dy += freeSpaceIncrement
             for (entry in galaxies.entries) {
-                if (entry.key.second > y) {
+                if (entry.key.y > y) {
                     entry.setValue(entry.value.first to entry.value.second + freeSpaceIncrement)
                 }
             }
@@ -51,15 +51,15 @@ private fun findGalaxyCoords(input: List<String>, freeSpaceIncrement: Long): Lis
         foundGalaxy = false
         for (i in y + 1 until input.size) {
             if (input[i][x] == '#') {
-                galaxies[x to i] = x + dx to i + dy
+                galaxies[Point2D(x, i)] = x + dx to i + dy
                 foundGalaxy = true
             }
         }
 
-        if (!foundGalaxy && galaxies.keys.none { it.first == x }) {
+        if (!foundGalaxy && galaxies.keys.none { it.x == x }) {
             dx += freeSpaceIncrement
             for (entry in galaxies.entries) {
-                if (entry.key.first > x) {
+                if (entry.key.x > x) {
                     entry.setValue(entry.value.first + freeSpaceIncrement to entry.value.second)
                 }
             }

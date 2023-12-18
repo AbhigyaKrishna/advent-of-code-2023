@@ -4,15 +4,15 @@ import java.util.EnumSet
 @OptIn(DelicateCoroutinesApi::class)
 fun main() {
     fun part1(input: List<String>): Int {
-        val visited = mutableMapOf<Point2D, EnumSet<RefDirection>>()
-        followPath(Point2D(0, 0), input, RefDirection.RIGHT, visited)
+        val visited = mutableMapOf<Point2D, EnumSet<Direction>>()
+        followPath(Point2D(0, 0), input, Direction.RIGHT, visited)
         return visited.size
     }
 
     fun part2(input: List<String>): Int {
-        fun createTask(x: Int, y: Int, direction: RefDirection): Deferred<Int> {
+        fun createTask(x: Int, y: Int, direction: Direction): Deferred<Int> {
             return GlobalScope.async {
-                val visited = mutableMapOf<Point2D, EnumSet<RefDirection>>()
+                val visited = mutableMapOf<Point2D, EnumSet<Direction>>()
                 followPath(Point2D(x, y), input, direction, visited)
                 visited.size
             }
@@ -21,13 +21,13 @@ fun main() {
             sequence {
                 val xLength = input[0].length
                 for (y in input.indices) {
-                    yield(createTask(0, y, RefDirection.RIGHT))
-                    yield(createTask(xLength - 1, y, RefDirection.LEFT))
+                    yield(createTask(0, y, Direction.RIGHT))
+                    yield(createTask(xLength - 1, y, Direction.LEFT))
                 }
 
                 for (x in 0..<xLength) {
-                    yield(createTask(x, 0, RefDirection.DOWN))
-                    yield(createTask(x, input.size - 1, RefDirection.UP))
+                    yield(createTask(x, 0, Direction.DOWN))
+                    yield(createTask(x, input.size - 1, Direction.UP))
                 }
             }.toList()
                 .awaitAll()
@@ -43,24 +43,9 @@ fun main() {
     part2(input).println()
 }
 
-private data class Point2D(val x: Int, val y: Int) {
-    fun translate(direction: RefDirection): Point2D {
-        return when (direction) {
-            RefDirection.UP -> Point2D(x, y - 1)
-            RefDirection.DOWN -> Point2D(x, y + 1)
-            RefDirection.LEFT -> Point2D(x - 1, y)
-            RefDirection.RIGHT -> Point2D(x + 1, y)
-        }
-    }
-}
-
-private enum class RefDirection {
-    UP, DOWN, LEFT, RIGHT
-}
-
 private operator fun List<String>.get(point: Point2D): Char = this[point.y][point.x]
 
-private fun followPath(point: Point2D, mesh: List<String>, direction: RefDirection, visited: MutableMap<Point2D, EnumSet<RefDirection>>) {
+private fun followPath(point: Point2D, mesh: List<String>, direction: Direction, visited: MutableMap<Point2D, EnumSet<Direction>>) {
     var curr = point
     var c: Char
     if (curr.x < 0 || curr.y < 0 || curr.y >= mesh.size || curr.x >= mesh[curr.y].length) return
@@ -78,44 +63,44 @@ private fun followPath(point: Point2D, mesh: List<String>, direction: RefDirecti
 
         if (curr in visited && direction in visited[curr]!!) return
 
-        visited.getOrPut(curr) { EnumSet.noneOf(RefDirection::class.java) }.add(direction)
+        visited.getOrPut(curr) { EnumSet.noneOf(Direction::class.java) }.add(direction)
         curr = curr.translate(direction)
         if (curr.x < 0 || curr.y < 0 || curr.y >= mesh.size || curr.x >= mesh[curr.y].length) return
     }
 
-    visited.getOrPut(curr) { EnumSet.noneOf(RefDirection::class.java) }.add(direction)
+    visited.getOrPut(curr) { EnumSet.noneOf(Direction::class.java) }.add(direction)
     when (c) {
         '\\' -> {
             when (direction) {
-                RefDirection.UP -> followPath(curr.translate(RefDirection.LEFT), mesh, RefDirection.LEFT, visited)
-                RefDirection.DOWN -> followPath(curr.translate(RefDirection.RIGHT), mesh, RefDirection.RIGHT, visited)
-                RefDirection.LEFT -> followPath(curr.translate(RefDirection.UP), mesh, RefDirection.UP, visited)
-                RefDirection.RIGHT -> followPath(curr.translate(RefDirection.DOWN), mesh, RefDirection.DOWN, visited)
+                Direction.UP -> followPath(curr.translate(Direction.LEFT), mesh, Direction.LEFT, visited)
+                Direction.DOWN -> followPath(curr.translate(Direction.RIGHT), mesh, Direction.RIGHT, visited)
+                Direction.LEFT -> followPath(curr.translate(Direction.UP), mesh, Direction.UP, visited)
+                Direction.RIGHT -> followPath(curr.translate(Direction.DOWN), mesh, Direction.DOWN, visited)
             }
         }
         '/' -> {
             when (direction) {
-                RefDirection.UP -> followPath(curr.translate(RefDirection.RIGHT), mesh, RefDirection.RIGHT, visited)
-                RefDirection.DOWN -> followPath(curr.translate(RefDirection.LEFT), mesh, RefDirection.LEFT, visited)
-                RefDirection.LEFT -> followPath(curr.translate(RefDirection.DOWN), mesh, RefDirection.DOWN, visited)
-                RefDirection.RIGHT -> followPath(curr.translate(RefDirection.UP), mesh, RefDirection.UP, visited)
+                Direction.UP -> followPath(curr.translate(Direction.RIGHT), mesh, Direction.RIGHT, visited)
+                Direction.DOWN -> followPath(curr.translate(Direction.LEFT), mesh, Direction.LEFT, visited)
+                Direction.LEFT -> followPath(curr.translate(Direction.DOWN), mesh, Direction.DOWN, visited)
+                Direction.RIGHT -> followPath(curr.translate(Direction.UP), mesh, Direction.UP, visited)
             }
         }
         '|' -> {
-            followPath(curr.translate(RefDirection.UP), mesh, RefDirection.UP, visited)
-            followPath(curr.translate(RefDirection.DOWN), mesh, RefDirection.DOWN, visited)
+            followPath(curr.translate(Direction.UP), mesh, Direction.UP, visited)
+            followPath(curr.translate(Direction.DOWN), mesh, Direction.DOWN, visited)
         }
         '-' -> {
-            followPath(curr.translate(RefDirection.LEFT), mesh, RefDirection.LEFT, visited)
-            followPath(curr.translate(RefDirection.RIGHT), mesh, RefDirection.RIGHT, visited)
+            followPath(curr.translate(Direction.LEFT), mesh, Direction.LEFT, visited)
+            followPath(curr.translate(Direction.RIGHT), mesh, Direction.RIGHT, visited)
         }
     }
 }
 
-private fun isPassable(c: Char, direction: RefDirection): Boolean {
+private fun isPassable(c: Char, direction: Direction): Boolean {
     return when (c) {
-        '|' -> direction == RefDirection.UP || direction == RefDirection.DOWN
-        '-' -> direction == RefDirection.LEFT || direction == RefDirection.RIGHT
+        '|' -> direction == Direction.UP || direction == Direction.DOWN
+        '-' -> direction == Direction.LEFT || direction == Direction.RIGHT
         '.' -> true
         else -> false
     }

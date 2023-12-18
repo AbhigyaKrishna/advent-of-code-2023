@@ -48,3 +48,44 @@ fun <T> Iterable<T>.chunked(splitter: (T) -> Boolean): List<List<T>> {
     result.add(curr)
     return result
 }
+
+/**
+ * Represents a 2 dimensional direction.
+ */
+enum class Direction {
+    UP, DOWN, LEFT, RIGHT;
+
+    fun opposite(): Direction = when (this) {
+        UP -> DOWN
+        DOWN -> UP
+        LEFT -> RIGHT
+        RIGHT -> LEFT
+    }
+}
+
+/**
+ * Represents a 2D point.
+ */
+data class Point2D(val x: Int, val y: Int) {
+
+    companion object {
+        val NORTH = Point2D(0, -1)
+        val EAST = Point2D(1, 0)
+        val SOUTH = Point2D(0, 1)
+        val WEST = Point2D(-1, 0)
+    }
+
+    operator fun plus(other: Point2D) = Point2D(x + other.x, y + other.y)
+
+    operator fun minus(other: Point2D) = Point2D(x - other.x, y - other.y)
+
+    fun translate(direction: Direction): Point2D {
+        return when (direction) {
+            Direction.UP -> Point2D(x, y - 1)
+            Direction.DOWN -> Point2D(x, y + 1)
+            Direction.LEFT -> Point2D(x - 1, y)
+            Direction.RIGHT -> Point2D(x + 1, y)
+        }
+    }
+
+}

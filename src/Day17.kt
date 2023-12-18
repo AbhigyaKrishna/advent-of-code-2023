@@ -8,7 +8,7 @@ fun main() {
             }
         }
 
-        val dist = findMinHeatLoss(graph, listOf(State(Point2DA(0, 0), Point2DA.EAST, 0)), 0, 3)
+        val dist = findMinHeatLoss(graph, listOf(State(Point2D(0, 0), Point2D.EAST, 0)), 0, 3)
         return dist
     }
 
@@ -19,7 +19,7 @@ fun main() {
             }
         }
 
-        val dist = findMinHeatLoss(graph, listOf(State(Point2DA(0, 0), Point2DA.EAST, 0), State(Point2DA(0, 0), Point2DA.SOUTH, 0)), 4, 10)
+        val dist = findMinHeatLoss(graph, listOf(State(Point2D(0, 0), Point2D.EAST, 0), State(Point2D(0, 0), Point2D.SOUTH, 0)), 4, 10)
         return dist
     }
 
@@ -31,20 +31,8 @@ fun main() {
     part2(input).println()
 }
 
-private data class Point2DA(val x: Int, val y: Int) {
-    companion object {
-        val NORTH = Point2DA(0, -1)
-        val EAST = Point2DA(1, 0)
-        val SOUTH = Point2DA(0, 1)
-        val WEST = Point2DA(-1, 0)
-    }
-
-    operator fun plus(other: Point2DA) = Point2DA(x + other.x, y + other.y)
-
-}
-
 private fun findMinHeatLoss(grid: Array<IntArray>, initialStates: List<State>, minBlocks: Int, maxBlocks: Int): Int {
-    val end = Point2DA(grid.lastIndex, grid.lastIndex)
+    val end = Point2D(grid.lastIndex, grid.lastIndex)
 
     val costs = mutableMapOf<State, Int>().withDefault { Int.MAX_VALUE }
     val toVisit = PriorityQueue<StateWithCost>()
@@ -74,13 +62,13 @@ private fun findMinHeatLoss(grid: Array<IntArray>, initialStates: List<State>, m
     return -1
 }
 
-private data class State(val point: Point2DA, val dir: Point2DA, val blocks: Int) {
+private data class State(val point: Point2D, val dir: Point2D, val blocks: Int) {
     fun next(minBlocks: Int, maxBlocks: Int) = buildList {
         when {
             blocks < minBlocks -> add(copy(point = point + dir, dir = dir, blocks = blocks + 1))
             else -> {
-                val left = Point2DA(dir.y, dir.x)
-                val right = Point2DA(-dir.y, -dir.x)
+                val left = Point2D(dir.y, dir.x)
+                val right = Point2D(-dir.y, -dir.x)
 
                 add(copy(point = point + left, dir = left, blocks = 1))
                 add(copy(point = point + right, dir = right, blocks = 1))
