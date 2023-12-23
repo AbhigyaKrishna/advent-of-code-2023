@@ -8,7 +8,7 @@ fun main() {
             }
         }
 
-        val dist = findMinHeatLoss(graph, listOf(State(Point2D(0, 0), Point2D.EAST, 0)), 0, 3)
+        val dist = findMinHeatLoss(graph, listOf(State(Point2D(0, 0), Direction.RIGHT, 0)), 0, 3)
         return dist
     }
 
@@ -19,7 +19,7 @@ fun main() {
             }
         }
 
-        val dist = findMinHeatLoss(graph, listOf(State(Point2D(0, 0), Point2D.EAST, 0), State(Point2D(0, 0), Point2D.SOUTH, 0)), 4, 10)
+        val dist = findMinHeatLoss(graph, listOf(State(Point2D(0, 0), Direction.RIGHT, 0), State(Point2D(0, 0), Direction.DOWN, 0)), 4, 10)
         return dist
     }
 
@@ -62,19 +62,19 @@ private fun findMinHeatLoss(grid: Array<IntArray>, initialStates: List<State>, m
     return -1
 }
 
-private data class State(val point: Point2D, val dir: Point2D, val blocks: Int) {
+private data class State(val point: Point2D, val dir: Direction, val blocks: Int) {
     fun next(minBlocks: Int, maxBlocks: Int) = buildList {
         when {
-            blocks < minBlocks -> add(copy(point = point + dir, dir = dir, blocks = blocks + 1))
+            blocks < minBlocks -> add(copy(point = point.translate(dir), dir = dir, blocks = blocks + 1))
             else -> {
-                val left = Point2D(dir.y, dir.x)
-                val right = Point2D(-dir.y, -dir.x)
+                val left = dir.left()
+                val right = dir.right()
 
-                add(copy(point = point + left, dir = left, blocks = 1))
-                add(copy(point = point + right, dir = right, blocks = 1))
+                add(copy(point = point.translate(left), dir = left, blocks = 1))
+                add(copy(point = point.translate(right), dir = right, blocks = 1))
 
                 if (blocks < maxBlocks) {
-                    add(copy(point = point + dir, dir = dir, blocks = blocks + 1))
+                    add(copy(point = point.translate(dir), dir = dir, blocks = blocks + 1))
                 }
             }
         }

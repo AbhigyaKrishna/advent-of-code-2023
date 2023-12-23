@@ -78,6 +78,20 @@ enum class Direction {
         LEFT -> RIGHT
         RIGHT -> LEFT
     }
+
+    fun left(): Direction = when (this) {
+        UP -> LEFT
+        DOWN -> RIGHT
+        LEFT -> DOWN
+        RIGHT -> UP
+    }
+
+    fun right(): Direction = when (this) {
+        UP -> RIGHT
+        DOWN -> LEFT
+        LEFT -> UP
+        RIGHT -> DOWN
+    }
 }
 
 /**
